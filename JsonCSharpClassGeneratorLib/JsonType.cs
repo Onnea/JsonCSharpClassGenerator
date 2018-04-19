@@ -295,18 +295,16 @@ namespace Xamasoft.JsonClassGenerator
 
         private static JsonTypeEnum GetFirstTypeEnum(JToken token)
         {
-            var type = token.Type;
-            if (type == JTokenType.Integer)
-            {
-                if ((long)((JValue)token).Value < int.MaxValue) return JsonTypeEnum.Integer;
-                else return JsonTypeEnum.Long;
-
-            }
+            JTokenType type = token.HasValues 
+                ? token.Type 
+                : (JTokenType) Enum.Parse( typeof(JTokenType), 
+                    JsonClassGenerator.ToTitleCase(token.Value<string>()) );
             switch (type)
             {
                 case JTokenType.Array: return JsonTypeEnum.Array;
                 case JTokenType.Boolean: return JsonTypeEnum.Boolean;
                 case JTokenType.Float: return JsonTypeEnum.Float;
+                case JTokenType.Integer: return JsonTypeEnum.Integer;
                 case JTokenType.Null: return JsonTypeEnum.NullableSomething;
                 case JTokenType.Undefined: return JsonTypeEnum.NullableSomething;
                 case JTokenType.String: return JsonTypeEnum.String;
